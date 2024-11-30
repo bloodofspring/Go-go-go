@@ -1,8 +1,8 @@
-package main
+package archive
 
 import "fmt"
 
-func main() {
+func CycleTestFunc() {
 	for i := 1; i <= 10; i++ {
 		fmt.Printf("I value: %d\n", i)
 	}
