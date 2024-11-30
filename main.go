@@ -1,9 +1,22 @@
 package main
 
 import (
-	"main/test_archive" // bad idea
+	"bufio"
+	"fmt"
+	"main/useful_things"
+	"os"
 )
 
 func main() {
-	test_archive.HelloWorld()
+	var eq string
+
+	fmt.Println("input equation:")
+	reader := bufio.NewReader(os.Stdin)
+	eq, err := reader.ReadString('\n')
+
+	if err != nil {
+		return
+	}
+
+	fmt.Printf("%v\n", useful_things.Eval(eq))
 }
