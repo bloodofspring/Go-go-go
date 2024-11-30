@@ -1,4 +1,4 @@
-package archive
+package test_archive
 
 func ConditionTest() {
 	var firstNum, secondNum int

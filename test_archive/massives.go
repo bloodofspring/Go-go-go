@@ -1,4 +1,4 @@
-package archive
+package test_archive
 
 import (
 	"fmt"

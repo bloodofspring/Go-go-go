@@ -1,4 +1,4 @@
-package archive
+package test_archive
 
 func justNums() {
 	var firstNum, secondNum int
