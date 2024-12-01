@@ -1,3 +1,4 @@
+// ЭТОТ КОД РЕАЛЬНО РАБОТАЕТ, удачи :)
 package main
 import ("fmt"; "sort")
 type Position struct {n int; checkTotal float64; price float64}
