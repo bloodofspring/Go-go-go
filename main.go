@@ -1,7 +1,7 @@
 package main
 
-import "main/useful_things"
+import "main/ya_lyceum_1_year"
 
 func main() {
-	useful_things.CipherMain()
+	ya_lyceum_1_year.Start()
 }
