@@ -1,5 +1,7 @@
 package main
 
+import "main/test_archive"
+
 func main() {
-	//Start()
+	test_archive.TestWhatAboutInterfaces()
 }

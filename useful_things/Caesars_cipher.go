@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"strconv"
 	"strings"
 )
 
@@ -32,14 +31,14 @@ func CipherMain() {
 	fmt.Println("Enter text:")
 	plaintext, err := reader.ReadString('\n')
 	fmt.Println("Enter shift:")
-	shift, err2 := reader.ReadString('\n')
-	shiftInt, err3 := strconv.Atoi(strings.Trim(shift, "\n "))
+	var shift int
+	_, err2 := fmt.Scanf("%d", &shift)
 
-	if err != nil || err2 != nil || err3 != nil {
+	if err != nil || err2 != nil {
 		panic(err)
 	}
 
-	if shiftInt < -32 || shiftInt > 256000 {
+	if shift < -32 || shift > 256000 {
 		panic("Shift must be between -32 and 32000.")
 	}
 
@@ -50,10 +49,10 @@ func CipherMain() {
 
 	switch strings.Trim(operation, "\n ") {
 	case "e":
-		encryptedText := Encrypt(plaintext, shiftInt)
+		encryptedText := Encrypt(plaintext, shift)
 		fmt.Println("Encrypted: ", encryptedText)
 	case "d":
-		decryptedText := Decrypt(plaintext, shiftInt)
+		decryptedText := Decrypt(plaintext, shift)
 		fmt.Print("Decrypted: ", decryptedText)
 	default:
 		println("Invalid operation.")
