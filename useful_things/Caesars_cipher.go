@@ -29,9 +29,9 @@ func Decrypt(ciphertext string, shift int) string {
 func CipherMain() {
 	reader := bufio.NewReader(os.Stdin)
 
-	fmt.Print("Enter text to decrypt:\n")
+	fmt.Println("Enter text:")
 	plaintext, err := reader.ReadString('\n')
-	fmt.Print("Enter shift:\n")
+	fmt.Println("Enter shift:")
 	shift, err2 := reader.ReadString('\n')
 	shiftInt, err3 := strconv.Atoi(strings.Trim(shift, "\n "))
 
@@ -43,10 +43,19 @@ func CipherMain() {
 		panic("Shift must be between -32 and 32000.")
 	}
 
-	encryptedText := Encrypt(plaintext, shiftInt)
-	fmt.Print("Your text: ", plaintext)
-	fmt.Println("Encrypted: ", encryptedText)
+	fmt.Println("Choose operation [d/e] (decrypt/encrypt)")
+	operation, _ := reader.ReadString('\n')
 
-	decryptedText := Decrypt(encryptedText, shiftInt)
-	fmt.Print("Decrypted (For check): ", decryptedText)
+	fmt.Print("Your text: ", plaintext)
+
+	switch strings.Trim(operation, "\n ") {
+	case "e":
+		encryptedText := Encrypt(plaintext, shiftInt)
+		fmt.Println("Encrypted: ", encryptedText)
+	case "d":
+		decryptedText := Decrypt(plaintext, shiftInt)
+		fmt.Print("Decrypted: ", decryptedText)
+	default:
+		println("Invalid operation.")
+	}
 }
