@@ -1,7 +1,9 @@
 package main
 
-import "main/useful_things"
+import (
+	"main/useful_things"
+)
 
 func main() {
-	useful_things.RunEval()
+	useful_things.Call()
 }
