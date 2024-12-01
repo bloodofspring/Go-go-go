@@ -8,10 +8,9 @@ import (
 
 func Eval(equation string) int {
 	fmt.Printf("Evaluating equation: %s\n", equation)
-	data := [3]string{}
 
 	equation = strings.Trim(equation, "\n")
-	copy(data[:], strings.Split(equation, " "))
+	data := strings.Split(equation, " ")
 
 	firstNum, _ := strconv.Atoi(data[0])
 	operation := data[1]
@@ -29,6 +28,6 @@ func Eval(equation string) int {
 	case "%":
 		return firstNum % SecondNum
 	default:
-		return 1
+		return -1
 	}
 }
