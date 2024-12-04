@@ -81,15 +81,22 @@ func (hl ActiveHandlers) handleAll(update tgbotapi.Update, bot tgbotapi.BotAPI) 
 	return result
 }
 
-func MessageHandler(callback Callback, filters []Filter) BaseHandler {
-	return BaseHandler{uuid.New(), "message", callback, filters}
+type handlerProducer struct {
+	handlerType string
 }
-func CommandHandler(callback Callback, filters []Filter) BaseHandler {
-	return BaseHandler{uuid.New(), "command", callback, filters}
+
+func (p handlerProducer) product(callback Callback, filters []Filter) BaseHandler {
+	return BaseHandler{
+		uuid:      uuid.New(),
+		queryType: p.handlerType,
+		callback:  callback,
+		filters:   filters,
+	}
 }
-func CallbackQueryHandler(callback Callback, filters []Filter) BaseHandler {
-	return BaseHandler{uuid.New(), "callbackQuery", callback, filters}
-}
+
+var MessageHandler = handlerProducer{"message"}
+var CommandHandler = handlerProducer{"command"}
+var CallbackQueryHandler = handlerProducer{"callbackQuery"}
 
 // ---------------------------------------------------
 // ---------------------------------------------------
@@ -120,7 +127,7 @@ func BotV2Main() {
 	log.Printf("Successfully authorized on account @%s", bot.Self.UserName)
 
 	actions := ActiveHandlers{handlers: []Handler{ // All th actions bot will react
-		CommandHandler(SayHi, []Filter{func(update tgbotapi.Update) bool { return update.Message.Command() == "start" }}),
+		CommandHandler.product(SayHi, []Filter{func(update tgbotapi.Update) bool { return update.Message.Command() == "start" }}),
 	}}
 
 	// start bot
