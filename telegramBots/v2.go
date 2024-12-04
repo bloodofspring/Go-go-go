@@ -8,13 +8,17 @@ import (
 	"os"
 )
 
-type Callback func(client tgbotapi.BotAPI, update tgbotapi.Update) error
 type Filter func(update tgbotapi.Update) bool
+
+type Callback interface {
+	run(update tgbotapi.Update) error
+	getName() string
+}
 
 type Handler interface {
 	checkType(update tgbotapi.Update) bool
 	checkFilters(update tgbotapi.Update) bool
-	run(update tgbotapi.Update, bot tgbotapi.BotAPI) (bool, error)
+	run(update tgbotapi.Update) (bool, error)
 	getId() uuid.UUID
 }
 
@@ -53,9 +57,9 @@ func (h BaseHandler) checkFilters(update tgbotapi.Update) bool {
 	return true
 }
 
-func (h BaseHandler) run(update tgbotapi.Update, bot tgbotapi.BotAPI) (bool, error) {
+func (h BaseHandler) run(update tgbotapi.Update) (bool, error) {
 	if h.checkType(update) && h.checkFilters(update) {
-		return true, h.callback(bot, update)
+		return true, h.callback.run(update)
 	}
 
 	return false, nil
@@ -65,11 +69,11 @@ type ActiveHandlers struct {
 	handlers []Handler
 }
 
-func (hl ActiveHandlers) handleAll(update tgbotapi.Update, bot tgbotapi.BotAPI) map[uuid.UUID]bool {
+func (hl ActiveHandlers) handleAll(update tgbotapi.Update) map[uuid.UUID]bool {
 	result := make(map[uuid.UUID]bool)
 
 	for _, h := range hl.handlers {
-		runResult, err := h.run(update, bot)
+		runResult, err := h.run(update)
 
 		if err != nil {
 			panic(err)
@@ -104,15 +108,28 @@ var CallbackQueryHandler = handlerProducer{"callbackQuery"}
 // ---------------------------------------------------
 // ---------------------------------------------------
 
-func SayHi(client tgbotapi.BotAPI, update tgbotapi.Update) error {
+type SayHi struct {
+	name   string
+	client tgbotapi.BotAPI
+}
+
+func (e SayHi) fabricateAnswer(update tgbotapi.Update) tgbotapi.MessageConfig {
 	msg := tgbotapi.NewMessage(update.Message.Chat.ID, "")
 	msg.Text = "Hi :)"
 
-	if _, err := client.Send(msg); err != nil {
+	return msg
+}
+
+func (e SayHi) run(update tgbotapi.Update) error {
+	if _, err := e.client.Send(e.fabricateAnswer(update)); err != nil {
 		return err
 	}
 
 	return nil
+}
+
+func (e SayHi) getName() string {
+	return e.name
 }
 
 func BotV2Main() {
@@ -126,8 +143,10 @@ func BotV2Main() {
 
 	log.Printf("Successfully authorized on account @%s", bot.Self.UserName)
 
+	startFilter := func(update tgbotapi.Update) bool { return update.Message.Command() == "start" }
+
 	actions := ActiveHandlers{handlers: []Handler{ // All th actions bot will react
-		CommandHandler.product(SayHi, []Filter{func(update tgbotapi.Update) bool { return update.Message.Command() == "start" }}),
+		CommandHandler.product(SayHi{"start-cmd", *bot}, []Filter{startFilter}),
 	}}
 
 	// start bot
@@ -137,7 +156,7 @@ func BotV2Main() {
 	// get updates
 	updates := bot.GetUpdatesChan(updateConfig)
 	for update := range updates {
-		runRes := actions.handleAll(update, *bot)
+		runRes := actions.handleAll(update)
 		fmt.Println("Run results: [ID|called]")
 		fmt.Println(runRes)
 	}
