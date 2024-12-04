@@ -9,34 +9,40 @@ import (
 )
 
 type Handler interface {
-	check(update tgbotapi.Update) bool
-	execute(update tgbotapi.Update, bot tgbotapi.BotAPI) bool
+	checkType(update tgbotapi.Update) bool
+	checkFilters(update tgbotapi.Update) bool
+	run(update tgbotapi.Update, bot tgbotapi.BotAPI) bool
 	getId() uuid.UUID
 }
 
 type BaseHandler struct {
-	uuid     uuid.UUID
-	callback func(update tgbotapi.Update, bot tgbotapi.BotAPI)
+	uuid      uuid.UUID
+	queryType string
+	callback  func(client tgbotapi.BotAPI, update tgbotapi.Update) bool
+	filters   []func(update tgbotapi.Update) bool
 }
-
-func (h BaseHandler) check(_ tgbotapi.Update) bool { return false }
 
 func (h BaseHandler) getId() uuid.UUID {
 	return h.uuid
 }
 
-type MessageHandler struct {
-	BaseHandler
-	filters []func(message tgbotapi.Message) bool
-}
-
-func (h MessageHandler) check(update tgbotapi.Update) bool {
-	if update.Message == nil {
+func (h BaseHandler) checkType(update tgbotapi.Update) bool {
+	switch h.queryType {
+	case "message":
+		return update.Message != nil
+	case "callbackQuery":
+		return update.CallbackQuery != nil
+	case "command":
+		return update.Message != nil && update.Message.IsCommand()
+	default:
+		fmt.Printf("WARNING! Unsupported query type: %s\n", h.queryType)
 		return false
 	}
+}
 
-	for _, filter := range h.filters {
-		if !filter(*update.Message) {
+func (h BaseHandler) checkFilters(update tgbotapi.Update) bool {
+	for _, f := range h.filters {
+		if !f(update) {
 			return false
 		}
 	}
@@ -44,28 +50,9 @@ func (h MessageHandler) check(update tgbotapi.Update) bool {
 	return true
 }
 
-func (h MessageHandler) execute(update tgbotapi.Update, bot tgbotapi.BotAPI) bool {
-	if h.check(update) {
-		h.callback(update, bot)
-		return true
-	}
-
-	return false
-}
-
-type CommandHandler struct {
-	BaseHandler
-	cmdText string
-}
-
-func (h CommandHandler) check(update tgbotapi.Update) bool {
-	return update.Message != nil && update.Message.IsCommand() && update.Message.Command() == h.cmdText
-}
-
-func (h CommandHandler) execute(update tgbotapi.Update, bot tgbotapi.BotAPI) bool {
-	if h.check(update) {
-		h.callback(update, bot)
-		return true
+func (h BaseHandler) run(update tgbotapi.Update, bot tgbotapi.BotAPI) bool {
+	if h.checkType(update) && h.checkFilters(update) {
+		return h.callback(bot, update)
 	}
 
 	return false
@@ -79,17 +66,26 @@ func (hl ActiveHandlers) handleAll(update tgbotapi.Update, bot tgbotapi.BotAPI) 
 	result := make(map[uuid.UUID]bool)
 
 	for _, h := range hl.handlers {
-		exec := h.execute(update, bot)
-		result[h.getId()] = exec
+		runResult := h.run(update, bot)
+		result[h.getId()] = runResult
 	}
 
 	return result
 }
 
+func MessageHandler(callback func(client tgbotapi.BotAPI, update tgbotapi.Update) bool, filters []func(update tgbotapi.Update) bool) BaseHandler {
+	return BaseHandler{uuid.New(), "message", callback, filters}
+}
+func CommandHandler(callback func(client tgbotapi.BotAPI, update tgbotapi.Update) bool, filters []func(update tgbotapi.Update) bool) BaseHandler {
+	return BaseHandler{uuid.New(), "command", callback, filters}
+}
+func CallbackQueryHandler(callback func(client tgbotapi.BotAPI, update tgbotapi.Update) bool, filters []func(update tgbotapi.Update) bool) BaseHandler {
+	return BaseHandler{uuid.New(), "callbackQuery", callback, filters}
+}
+
 // ---------------------------------------------------
 // ---------------------------------------------------
-// ------------END OF TECHNICAL EXPERIMENT------------
-// ------------------TEST CODE NEXT-------------------
+// ---------------END OF TECHNICAL PART---------------
 // ---------------------------------------------------
 // ---------------------------------------------------
 
@@ -102,13 +98,15 @@ func HelpCmd(update tgbotapi.Update, bot tgbotapi.BotAPI) {
 	}
 }
 
-func SayHi(update tgbotapi.Update, bot tgbotapi.BotAPI) {
+func SayHi(client tgbotapi.BotAPI, update tgbotapi.Update) bool {
 	msg := tgbotapi.NewMessage(update.Message.Chat.ID, "")
 	msg.Text = "Hi :)"
 
-	if _, err := bot.Send(msg); err != nil {
-		panic(err)
+	if _, err := client.Send(msg); err != nil {
+		return false
 	}
+
+	return true
 }
 
 func StatusCmd(update tgbotapi.Update, bot tgbotapi.BotAPI) {
@@ -132,9 +130,7 @@ func BotV2Main() {
 	log.Printf("Successfully authorized on account @%s", bot.Self.UserName)
 
 	actions := ActiveHandlers{handlers: []Handler{ // All th actions bot will react
-		CommandHandler{BaseHandler{uuid.New(), HelpCmd}, "help"},
-		CommandHandler{BaseHandler{uuid.New(), SayHi}, "sayhi"},
-		CommandHandler{BaseHandler{uuid.New(), StatusCmd}, "status"},
+		CommandHandler(SayHi, []func(update tgbotapi.Update) bool{func(update tgbotapi.Update) bool { return update.Message.Command() == "start" }}),
 	}}
 
 	// start bot
