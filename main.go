@@ -1,8 +1,6 @@
 package main
 
-import (
-	"main/telegramBots"
-)
+import "main/telegramBots"
 
 func main() {
 	telegramBots.BotV2Main()
