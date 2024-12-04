@@ -1,9 +1,9 @@
 package main
 
 import (
-	"main/test_archive"
+	"main/telegramBots"
 )
 
 func main() {
-	test_archive.FibonacciMain()
+	telegramBots.BotV2Main()
 }
