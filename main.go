@@ -1,7 +1,7 @@
 package main
 
-import "main/telegramBots"
+import "main/databases"
 
 func main() {
-	telegramBots.BotV2Main()
+	databases.DbMain()
 }
