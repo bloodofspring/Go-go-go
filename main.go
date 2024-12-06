@@ -1,7 +1,9 @@
 package main
 
-import "main/databases"
+import (
+	"main/ya_lyceum_1_year"
+)
 
 func main() {
-	databases.DbMain()
+	ya_lyceum_1_year.IqTest()
 }
