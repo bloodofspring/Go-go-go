@@ -45,3 +45,26 @@ func IqTest() {
 	}
 
 }
+
+// Another task
+
+func SchwarzeneggerVsGodzilla() {
+	var shots int
+	var damage float32
+	var err error
+
+	fmt.Print("Enter number of shots: ")
+	_, err = fmt.Scanf("%d", &shots)
+	handleError(err)
+
+	for i := 0; i < shots; i++ {
+		var numerator, denominator int
+		fmt.Printf("[%d] Enter damage (a/b): ", i)
+		_, err = fmt.Scanf("%d/%d", &numerator, &denominator)
+		handleError(err)
+
+		damage += float32(numerator) / float32(denominator)
+	}
+
+	fmt.Printf("%.2f", damage)
+}

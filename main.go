@@ -5,5 +5,5 @@ import (
 )
 
 func main() {
-	ya_lyceum_1_year.IqTest()
+	ya_lyceum_1_year.SchwarzeneggerVsGodzilla()
 }
