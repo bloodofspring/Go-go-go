@@ -82,3 +82,32 @@ func Matrix() {
 		fmt.Print("\n")
 	}
 }
+
+func isSimple(n int) bool {
+	for i := 2; i <= n/2+1; i++ {
+		if n%i == 0 {
+			return false
+		}
+	}
+	return true
+}
+
+func FindSimpleNumbers() {
+	var n int
+	_, err = fmt.Scanf("%d", &n)
+	handleError(err)
+
+	for i := 1; i <= n; i++ {
+		var start, end int
+		_, err = fmt.Scanf("%d %d", &start, &end)
+		handleError(err)
+
+		simple := 0
+		for num := start; num <= end; num++ {
+			if isSimple(num) {
+				simple++
+			}
+		}
+		fmt.Println(simple)
+	}
+}
