@@ -111,3 +111,46 @@ func FindSimpleNumbers() {
 		fmt.Println(simple)
 	}
 }
+
+const delim int = 12345
+
+func CountMod() {
+	var a, n float64
+	_, err = fmt.Scanf("%f %f", &a, &n)
+	handleError(err)
+
+	fmt.Println(int(math.Pow(a, n)) % delim)
+}
+
+type dot struct {
+	x, y float64
+}
+
+type triangle struct {
+	dotA, dotB, dotC dot
+}
+
+type equation struct {
+	k, b float64
+}
+
+func (e equation) check(d dot) bool {
+	fmt.Printf("%.3f <= %.3f * %.3f + %.3f %t\n", d.y, e.k, d.x, e.b, d.y <= e.k*d.x+e.b)
+	return d.y <= e.k*d.x+e.b
+}
+
+// Определяет уравнение прямой по 2 точкам
+func (d1 dot) lineEquation(d2 dot) equation {
+	m := (d1.y - d2.y) / (d1.x - d2.x)
+	b := d1.y - m*d1.x
+
+	return equation{k: m, b: b}
+}
+
+func PointInATriangle() {
+	var t triangle
+	var dotD dot
+	_, err = fmt.Scanf("%f %f %f %f %f %f %f %f", &t.dotA.x, &t.dotA.y, &t.dotB.x, &t.dotB.y, &t.dotC.x, &t.dotC.y, &dotD.x, &dotD.y)
+	handleError(err)
+	fmt.Println(t.dotA.lineEquation(t.dotB).check(dotD), t.dotB.lineEquation(t.dotC).check(dotD), t.dotC.lineEquation(t.dotA).check(dotD))
+}
