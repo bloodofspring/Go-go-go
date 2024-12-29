@@ -10,5 +10,5 @@ func main() {
 	// fmt.Println("Input data:")
 	// fmt.Scanf("%s", &s)
 
-	fmt.Println(kata.SpinWords("Hey fellow warriors"))
+	fmt.Println(kata.FindOutlier([]int{1, -44, 1}))
 }
