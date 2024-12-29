@@ -6,5 +6,5 @@ import (
 )
 
 func main() {
-	fmt.Println(kata.Persistence(39))
+	fmt.Println(kata.Alphanumeric(".*?"))
 }
