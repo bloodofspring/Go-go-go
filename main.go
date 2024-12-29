@@ -10,5 +10,5 @@ func main() {
 	// fmt.Println("Input data:")
 	// fmt.Scanf("%s", &s)
 
-	fmt.Println(kata.High("man i need a taxi up to ubud"))
+	fmt.Println(kata.Multiple3And5(10))
 }
