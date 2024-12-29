@@ -6,9 +6,5 @@ import (
 )
 
 func main() {
-	// var s string
-	// fmt.Println("Input data:")
-	// fmt.Scanf("%s", &s)
-
-	fmt.Println(kata.FindOutlier([]int{1, -44, 1}))
+	fmt.Println(kata.FindNb(91716553919377))
 }
