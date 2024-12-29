@@ -10,5 +10,5 @@ func main() {
 	// fmt.Println("Input data:")
 	// fmt.Scanf("%s", &s)
 
-	fmt.Println(kata.HasUniqueChar("  nAa"))
+	fmt.Println(kata.GetCount("abracadabra"))
 }
