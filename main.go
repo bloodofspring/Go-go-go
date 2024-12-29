@@ -6,5 +6,5 @@ import (
 )
 
 func main() {
-	fmt.Println(kata.FindNb(91716553919377))
+	fmt.Println(kata.Persistence(39))
 }
