@@ -6,5 +6,9 @@ import (
 )
 
 func main() {
-	fmt.Println(kata.ToCamelCase(""))
+	// var s string
+	// fmt.Println("Input data:")
+	// fmt.Scanf("%s", &s)
+
+	fmt.Println(kata.HasUniqueChar("  nAa"))
 }
