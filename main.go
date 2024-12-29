@@ -10,5 +10,5 @@ func main() {
 	// fmt.Println("Input data:")
 	// fmt.Scanf("%s", &s)
 
-	fmt.Println(kata.GetMiddle("testing"))
+	fmt.Println(kata.FindEvenIndex([]int{1, 2, 3, 4, 3, 2, 1}))
 }
