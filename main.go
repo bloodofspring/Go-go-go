@@ -6,5 +6,5 @@ import (
 )
 
 func main() {
-	fmt.Println(kata.Alphanumeric(".*?"))
+	fmt.Println(kata.NextBigger(1234567890))
 }
