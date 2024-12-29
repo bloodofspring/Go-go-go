@@ -10,5 +10,5 @@ func main() {
 	// fmt.Println("Input data:")
 	// fmt.Scanf("%s", &s)
 
-	fmt.Println(kata.DigitalRoot(195))
+	fmt.Println(kata.FindNextSquare(121))
 }
