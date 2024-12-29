@@ -1,11 +1,10 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"main/kata"
+)
 
 func main() {
-	var name string
-	fmt.Println("Enter your name:")
-	fmt.Scanf("My name is %s", &name)
-
-	fmt.Printf("Hello, %s", name)
+	fmt.Println(kata.ToCamelCase(""))
 }
