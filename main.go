@@ -1,5 +1,10 @@
 package main
 
+import (
+	"fmt"
+	"main/kata"
+)
+
 func main() {
-	PointInATriangle()
+	fmt.Println(kata.Persistence(39))
 }

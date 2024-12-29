@@ -1,4 +1,4 @@
-package main
+package test_archive
 
 import (
 	"bufio"
@@ -147,10 +147,10 @@ func (d1 dot) lineEquation(d2 dot) equation {
 	return equation{k: m, b: b}
 }
 
-func PointInATriangle() {
-	var t triangle
-	var dotD dot
-	_, err = fmt.Scanf("%f %f %f %f %f %f %f %f", &t.dotA.x, &t.dotA.y, &t.dotB.x, &t.dotB.y, &t.dotC.x, &t.dotC.y, &dotD.x, &dotD.y)
-	handleError(err)
-	fmt.Println(t.dotA.lineEquation(t.dotB).check(dotD), t.dotB.lineEquation(t.dotC).check(dotD), t.dotC.lineEquation(t.dotA).check(dotD))
-}
+// func PointInATriangle() {
+// 	var t triangle
+// 	var dotD dot
+// 	_, err = fmt.Scanf("%f %f %f %f %f %f %f %f", &t.dotA.x, &t.dotA.y, &t.dotB.x, &t.dotB.y, &t.dotC.x, &t.dotC.y, &dotD.x, &dotD.y)
+// 	handleError(err)
+// 	fmt.Println(t.dotA.lineEquation(t.dotB).check(dotD), t.dotB.lineEquation(t.dotC).check(dotD), t.dotC.lineEquation(t.dotA).check(dotD))
+// }
