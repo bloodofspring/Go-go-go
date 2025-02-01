@@ -2,14 +2,22 @@ package main
 
 import (
 	"fmt"
-	"main/kata"
+	"main/useful_things"
 )
 
+// func printSnake(snake [][]int) {
+// 	for _, row := range snake {
+// 		for i := 0; i < len(row); i++ {
+// 			if row[i] == 1 {
+// 				fmt.Print("@")
+// 			} else {
+// 				fmt.Print("-")
+// 			}
+// 		}
+// 		fmt.Println()
+// 	}
+// }
+
 func main() {
-	fmt.Println(kata.Snail([][]int{
-		{},
-		// {1, 2, 3},
-		// {4, 5, 6},
-		// {7, 8, 9},
-	}))
+	fmt.Println(useful_things.RandomDate())
 }
